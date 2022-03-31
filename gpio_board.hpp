@@ -53,7 +53,7 @@ namespace gpio_boards
      */
     struct gpio_board_0
     {
-        uint16_t write_adress = 0x08;
+        uint16_t write_adress = 0x20;
         uint16_t read_adress = 0x41;
     };
 
@@ -63,7 +63,7 @@ namespace gpio_boards
      */
     struct gpio_board_1
     {
-        uint16_t write_adress = 0x42;
+        uint16_t write_adress = 0x21;
         uint16_t read_adress = 0x43;
     };
 

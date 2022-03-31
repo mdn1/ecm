@@ -22,11 +22,14 @@ int main()
     init();
     gpio_boards::gpio_board *board0 = new gpio_boards::gpio_board(
         i2c_bus_location, gpio_boards::gpio_boards_enum::GPIO_BOARD_0);
+    gpio_boards::gpio_board *board1 = new gpio_boards::gpio_board(
+        i2c_bus_location, gpio_boards::gpio_boards_enum::GPIO_BOARD_1);
 
-    board0->write_all(0x00);
-    sleep(1);
+
+    board0->write_all(~(0b0000'0000));
+    board1->write_all(~(0b0000'0011));
+    sleep(30);
     board0->write_all(0xff);
-    sleep(1);
-    board0->write_all(0x00);
+    board1->write_all(0xff);
     delete board0;
 }
