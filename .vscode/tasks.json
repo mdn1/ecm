@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "cppbuild",
+			"type": "shell",
 			"label": "C/C++: g++ build active file",
 			"command": "/bin/g++",
 			"args": [
@@ -10,7 +10,7 @@
 				"-g",
 				"${fileDirname}/*.cpp",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}.exe"
+				"${fileDirname}/${fileBasenameNoExtension}"
 			],
 			"options": {
 				"cwd": "${fileDirname}"

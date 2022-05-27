@@ -53,8 +53,8 @@ namespace gpio_boards
      */
     struct gpio_board_0
     {
-        uint16_t write_adress = 0x20;
-        uint16_t read_adress = 0x41;
+        uint16_t write_adress = 0x40 >> 1; //20
+        uint16_t read_adress = 0x41 >> 1;
     };
 
     /*
@@ -63,8 +63,8 @@ namespace gpio_boards
      */
     struct gpio_board_1
     {
-        uint16_t write_adress = 0x21;
-        uint16_t read_adress = 0x43;
+        uint16_t write_adress = 0x42 >> 1; //21
+        uint16_t read_adress = 0x43 >> 1;
     };
 
     /*
@@ -73,8 +73,8 @@ namespace gpio_boards
      */
     struct gpio_board_2
     {
-        uint16_t write_adress = 0x44;
-        uint16_t read_adress = 0x45;
+        uint16_t write_adress = 0x44 >> 1;
+        uint16_t read_adress = 0x45 >> 1;
     };
 
     /*
@@ -83,8 +83,8 @@ namespace gpio_boards
      */
     struct gpio_board_3
     {
-        uint16_t write_adress = 0x46;
-        uint16_t read_adress = 0x47;
+        uint16_t write_adress = 0x46 >> 1;
+        uint16_t read_adress = 0x47 >> 1;
     };
 
     /*
@@ -93,8 +93,8 @@ namespace gpio_boards
      */
     struct gpio_board_4
     {
-        uint16_t write_adress = 0x48;
-        uint16_t read_adress = 0x49;
+        uint16_t write_adress = 0x48 >> 1;
+        uint16_t read_adress = 0x49 >> 1;
     };
 
     /*
@@ -103,8 +103,8 @@ namespace gpio_boards
      */
     struct gpio_board_5
     {
-        uint16_t write_adress = 0x4A;
-        uint16_t read_adress = 0x4B;
+        uint16_t write_adress = 0x4A >> 1;
+        uint16_t read_adress = 0x4B >> 1;
     };
 
     /*
@@ -113,8 +113,8 @@ namespace gpio_boards
      */
     struct gpio_board_6
     {
-        uint16_t write_adress = 0x4C;
-        uint16_t read_adress = 0x4D;
+        uint16_t write_adress = 0x4C >> 1;
+        uint16_t read_adress = 0x4D >> 1;
     };
 
     /*
@@ -123,8 +123,8 @@ namespace gpio_boards
      */
     struct gpio_board_7
     {
-        uint16_t write_adress = 0x4E;
-        uint16_t read_adress = 0x4F;
+        uint16_t write_adress = 0x4E >> 1;
+        uint16_t read_adress = 0x4F >> 1;
     };
 
 } // namespace gpio_boards
