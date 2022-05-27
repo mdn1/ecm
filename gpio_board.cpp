@@ -3,7 +3,7 @@
 namespace gpio_boards
 {
 
-    gpio_board::gpio_board(char *i2c_bus_location, gpio_boards_enum board_number)
+    gpio_board::gpio_board(const std::string& i2cBusPort, gpio_boards_enum board_number)
     {
         this->board_number = board_number;
 
@@ -12,57 +12,57 @@ namespace gpio_boards
         case gpio_boards_enum::GPIO_BOARD_0:
         {
             gpio_board_0 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_1:
         {
             gpio_board_1 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_2:
         {
             gpio_board_2 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_3:
         {
             gpio_board_3 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_4:
         {
             gpio_board_4 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_5:
         {
             gpio_board_5 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_6:
         {
             gpio_board_6 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         case gpio_boards_enum::GPIO_BOARD_7:
         {
             gpio_board_7 board;
-            write_handle = new pcf8574(i2c_bus_location, board.write_adress);
-            read_handle = new pcf8574(i2c_bus_location, board.read_adress);
+            write_handle = new pcf8574(i2cBusPort, board.write_adress);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress);
             break;
         }
         }
@@ -89,7 +89,7 @@ namespace gpio_boards
         return read_handle->getBit(input_pin);
     }
 
-    unsigned char gpio_board::read_all(uint8_t input_pin)
+    unsigned char gpio_board::read_all()
     {
         return read_handle->getByte();
     }

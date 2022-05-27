@@ -29,22 +29,22 @@ namespace gpio_boards
     class gpio_board
     {
     public:
-        gpio_board(char *i2c_bus_location, gpio_boards_enum board_number);
+        gpio_board(const std::string& i2cBusPort, gpio_boards_enum board_number);
         ~gpio_board();
         void write(uint8_t output_pin, uint8_t value);
         void write_all(unsigned char value);
         uint8_t read(uint8_t input_pin); // pin to read the status from
-        unsigned char read_all(uint8_t input_pin);
+        unsigned char read_all();
         // int get_board_address() { return address; }
         // void set_board_address(int address) { this->address = address; }
-        // char *geti2c_bus_location() { return i2c_bus_location; }
-        // void seti2c_bus_location(char *i2c_bus_location) { strcpy(this->i2c_bus_location, i2c_bus_location); }
+        // char *geti2cBusPort() { return i2cBusPort; }
+        // void seti2cBusPort(char *i2cBusPort) { strcpy(this->i2cBusPort, i2cBusPort); }
 
     private:
         pcf8574 *write_handle;
         pcf8574 *read_handle;
         gpio_boards_enum board_number;
-        // char i2c_bus_location[256];
+        // char i2cBusPort[256];
     };
 
     /*

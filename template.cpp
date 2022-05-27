@@ -19,7 +19,6 @@
 //======================================================================================================================
 // Inclusions
 //====================================================================================================================== 
-#include "pcf8574.hpp"
 
 
 //======================================================================================================================
@@ -50,71 +49,4 @@
 /// ------------------------------------------------------------------------------------------------------------
 /// See description in Header file.
 /// ------------------------------------------------------------------------------------------------------------
-void pcf8574::setByte(unsigned char value)
-{
-    struct i2c_smbus_ioctl_data data;
-    data.read_write = I2C_SMBUS_WRITE;
-    data.size = I2C_SMBUS_BYTE;
-    data.data = NULL;
-    data.command = value;
-
-    int device;
-    if ((device = open(i2cBusPort.c_str(), O_RDWR)) == -1)
-    {
-        fprintf(stderr,
-                "ERROR: pcf8574::setByte failed to open i2c bus at %s\n", i2cBusPort);
-        exit(EXIT_FAILURE);
-    }
-
-    ioctl(device, I2C_SLAVE, address);
-    ioctl(device, I2C_SMBUS, &data);
-    close(device);
-    state = value;
-}
-
-
-/// ------------------------------------------------------------------------------------------------------------
-/// See description in Header file.
-/// ------------------------------------------------------------------------------------------------------------
-void pcf8574::setBit(int outputPin, int newState)
-{
-    char mask = 0x01 << outputPin;
-    setByte(newState ? (state | mask) : (state & (~mask)));
-}
-
-
-/// ------------------------------------------------------------------------------------------------------------
-/// See description in Header file.
-/// ------------------------------------------------------------------------------------------------------------
-unsigned char pcf8574::getByte()
-{
-    union i2c_smbus_data data_union;
-    struct i2c_smbus_ioctl_data data;
-    data.read_write = I2C_SMBUS_READ;
-    data.size = I2C_SMBUS_BYTE;
-    data.data = &data_union;
-    data.command = 0;
-
-    int device;
-    if ((device = open(i2cBusPort.c_str(), O_RDWR)) == -1)
-    {
-        fprintf(stderr,
-                "ERROR: pcf8574::getByte failed to open i2c bus at %s\n", i2cBusPort);
-        exit(EXIT_FAILURE);
-    }
-
-    ioctl(device, I2C_SLAVE, address);
-    ioctl(device, I2C_SMBUS, &data);
-    close(device);
-    return data_union.byte;
-}
-
-
-/// ------------------------------------------------------------------------------------------------------------
-/// See description in Header file.
-/// ------------------------------------------------------------------------------------------------------------
-uint8_t pcf8574::getBit(uint8_t pin)
-{
-    char mask = 0x01 << pin;
-    return getByte() & mask ? 1 : 0;
-}
+//void exampleMethod() {}
