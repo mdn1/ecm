@@ -8,7 +8,7 @@
 
 #include "conf.hpp"
 #include "gpio_board.hpp"
-#include "pcf8574.hpp"
+//#include "pcf8574.hpp"
 
 gpio_boards::gpio_board *board0 = new gpio_boards::gpio_board(
         i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_0);

@@ -1,7 +1,7 @@
 //======================================================================================================================
 // C O P Y R I G H T
 //======================================================================================================================
-/// \file       pcf8574.hpp
+/// \file       pcf8574_io.hpp
 /// \brief      TODO
 /// \details    TODO
 /// \author     maintained by: Mario D. Nevola
@@ -42,7 +42,12 @@
 //======================================================================================================================
 // Type Definitions / Enums / Defines / Macros / Consts
 //======================================================================================================================
-
+enum class GpioType : uint8_t
+{
+    Input = 0x00,
+    Output = 0x01,
+};
+typedef GpioType gpioType_t;
 
 //======================================================================================================================
 // Extern Variables
@@ -63,6 +68,7 @@ private:
     uint16_t address;
     unsigned char state;
     std::string i2cBusPort;
+    gpioType_t gpioType;
 
 public:
     /// ----------------------------------------------------------------------------------------------------------------
@@ -77,11 +83,12 @@ public:
     ///     I2C address of the pcf8574.
     ///     </param>
     /// ----------------------------------------------------------------------------------------------------------------
-    pcf8574(const std::string& i2cBusPort, uint16_t address)    
+    pcf8574(const std::string& i2cBusPort, uint16_t address, gpioType_t gpioType)    
     {
         this->i2cBusPort = i2cBusPort;
         this->address = address;
         this->state = 0xff;
+        this->gpioType = gpioType;
         setByte(state);
     }
 
