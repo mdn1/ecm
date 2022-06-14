@@ -148,24 +148,6 @@ namespace gpio_boards
 //======================================================================================================================
 // Prototypes
 //======================================================================================================================
-/// ----------------------------------------------------------------------------------------------------------------
-/// <summary>
-/// One line description.
-/// <para><b>Description</b></para>
-///     Multiple line description.
-///     Return: U8 status, 0=OK (no error)
-///     </summary>
-/// <param name='param1'>
-///     Description of the first paramter.
-///     </param>
-/// <param name='param2'>
-///     Description of the second paramter.
-///     </param>
-/// ----------------------------------------------------------------------------------------------------------------
-//static uint8_t exampleMethod (uint32_t* param1, uint32_t param2);
-
-
-
 namespace gpio_boards
 {
     class gpio_board
@@ -176,12 +158,87 @@ namespace gpio_boards
         pcf8574 *read_handle;
         gpio_boards_enum board_number;
     public:
+    
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Default class constructor.
+        /// <para><b>Description</b></para>
+        ///     </summary>
+        /// <param name='i2cBusPort'>
+        ///     The I2C port to use.
+        ///     </param>
+        /// <param name='board_number'>
+        ///     The number of the board attempting to initialze. 
+        ///     This number is related to the physical I2C of each board.
+        ///     </param>
+        /// ----------------------------------------------------------------------------------------------------------------
         gpio_board(const std::string& i2cBusPort, gpio_boards_enum board_number);
+
+
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Class destructor.
+        /// <para><b>Description</b></para>
+        ///     </summary>
+        /// ----------------------------------------------------------------------------------------------------------------
         ~gpio_board();
+
+
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Write a new state for a single output.
+        /// <para><b>Description</b></para>
+        ///     This methods allows to change the state of a single output.
+        ///     </summary>
+        /// <param name='output_pin'>
+        ///     Pin to which change the state.
+        ///     </param>
+        /// <param name='value'>
+        ///     The new state of the output.
+        ///     </param>
+        /// ----------------------------------------------------------------------------------------------------------------
         void write(uint8_t output_pin, uint8_t value);
+
+
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Write a new state for ALL outputs.
+        /// <para><b>Description</b></para>
+        ///     This methods allows to change the state of ALL outputs at once.
+        ///     If only one output should be changed, then all others must still be sent with the last state.
+        ///     </summary>
+        /// <param name='value'>
+        ///     A byte containing the value of all outputs (e.g: 00010111).
+        ///     </param>
+        /// ----------------------------------------------------------------------------------------------------------------
         void write_all(unsigned char value);
+
+
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Read the state of a single input.
+        /// <para><b>Description</b></para>
+        ///     This methods allows to read the state of a single input.
+        ///     Return: state of the input.
+        ///     </summary>
+        /// <param name='input_pin'>
+        ///     Pin to which read the state from.
+        ///     </param>
+        /// ----------------------------------------------------------------------------------------------------------------
         uint8_t read(uint8_t input_pin); // pin to read the status from
+
+
+        /// ----------------------------------------------------------------------------------------------------------------
+        /// <summary>
+        /// Read the state of ALL inputs.
+        /// <para><b>Description</b></para>
+        ///     This methods allows to read the state of ALL inputs at once.
+        ///     Return: byte containing the state of all 8 inputs.
+        ///     </summary>
+        /// ----------------------------------------------------------------------------------------------------------------
         unsigned char read_all();
+
+
         // int get_board_address() { return address; }
         // void set_board_address(int address) { this->address = address; }
         // char *geti2cBusPort() { return i2cBusPort; }
