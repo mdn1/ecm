@@ -8,6 +8,7 @@
 
 #include "conf.hpp"
 #include "gpio_board.hpp"
+#include "tcp.hpp"
 //#include "pcf8574.hpp"
 
 gpio_boards::gpio_board *board0 = new gpio_boards::gpio_board(
@@ -28,10 +29,10 @@ int main()
     init();
     
     board0->write_all(~(0b00000001));
-    std::cout << board0->read_all() << '\n';
+    //std::cout << board0->read_all() << '\n';
     board1->write_all(~(0b00000011));
     board2->write_all(~(0b00000111));
-    sleep(2);
+    sleep(1);
     board0->write_all(~(0b00000001));
     std::cout << board0->read_all();
     board1->write_all(~(0b00000001));
@@ -65,4 +66,6 @@ int main()
     delete board0;
     delete board1;
     delete board2;
+
+    startTcpServer();
 }

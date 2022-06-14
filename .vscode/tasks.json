@@ -10,7 +10,8 @@
 				"-g",
 				"${fileDirname}/*.cpp",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}"
+				"${fileDirname}/${fileBasenameNoExtension}",
+				"-lpthread"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
