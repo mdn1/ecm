@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Jun 14 18:20:24 2022
+# Make data base, printed on Mon Jun 20 11:55:27 2022
 
 # Variables
 
@@ -32,8 +32,6 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 PWD = /home/sojuz/Desktop/ecm
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
-# environment
-OLDPWD = /home/sojuz/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -93,7 +91,7 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/sojuz/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+PATH = /home/sojuz/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
 # default
 MAKEFILES := 
 # environment
@@ -101,7 +99,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-SSH_CLIENT = 192.168.111.31 60400 22
+SSH_CLIENT = 192.168.111.31 53741 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -113,7 +111,7 @@ LS_COLORS =
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
-BROWSER = /home/sojuz/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/helpers/browser.sh
+BROWSER = /home/sojuz/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/helpers/browser.sh
 # environment
 LOGNAME = sojuz
 # makefile
@@ -127,11 +125,11 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 VSCODE_AGENT_FOLDER = /home/sojuz/.vscode-server
 # environment
-_ = /home/sojuz/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
+_ = /home/sojuz/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-bd55b2bf-18c9-4ae5-921c-54d69316e22f.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-b1ca145d-bcdf-46ef-a69f-c1b3b74a2d51.sock
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -149,9 +147,9 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = 192.168.111.31 60400 192.168.111.50 22
+SSH_CONNECTION = 192.168.111.31 53741 192.168.111.50 22
 # variable set hash-table stats:
-# Load=69/1024=7%, Rehash=0, Collisions=2/96=2%
+# Load=68/1024=7%, Rehash=0, Collisions=2/95=2%
 
 # Pattern-specific Variable Values
 
@@ -159,9 +157,9 @@ SSH_CONNECTION = 192.168.111.31 60400 192.168.111.50 22
 
 # Directories
 
-# . (device 45826, inode 392732): 14 files, no impossibilities.
+# . (device 45826, inode 392732): 18 files, no impossibilities.
 
-# 14 files, no impossibilities in 1 directories.
+# 18 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -211,12 +209,12 @@ GNUmakefile:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 22 / storage = 202 B / avg = 9 B
-# current buf: size = 8162 B / used = 202 B / count = 22 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 253 B / avg = 9 B
+# current buf: size = 8162 B / used = 253 B / count = 26 / avg = 9 B
 
-# strcache performance: lookups = 25 / hit rate = 12%
+# strcache performance: lookups = 29 / hit rate = 10%
 # hash-table stats:
-# Load=22/8192=0%, Rehash=0, Collisions=0/25=0%
-# Finished Make data base on Tue Jun 14 18:20:24 2022
+# Load=26/8192=0%, Rehash=0, Collisions=0/29=0%
+# Finished Make data base on Mon Jun 20 11:55:27 2022
 
  
