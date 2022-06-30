@@ -1,21 +1,9 @@
 //======================================================================================================================
 // C O P Y R I G H T
 //======================================================================================================================
-/// \file       tcp.hpp
+/// \file       tcp_message.hpp
 /// \brief      TODO
-/// \details
-
-///             Server side:
-///             	1. Create a socket (socket())
-///             	2. Bind it to a port (bind())
-///             	3. Set it to listen state. (listen())
-///             	4. Accept a connection (accept())
-///             	5. Send and receive data with accepted socket (send() & recv())
-///
-///             Client side
-///             	1. Create a socket (socket())
-///             	2. Establish a connection (connect())
-///             	3. Send and recive data (send() & recv())
+/// \details    TODO
 /// \author     maintained by: Mario D. Nevola
 ///
 /// \copyright  Copyright (c) 2022 by Universität Stuttgart. All rights reserved. \n
@@ -30,59 +18,63 @@
 //======================================================================================================================
 // Header Protection
 //======================================================================================================================
-#ifndef TEMPLATE_HPP_
-#define TEMPLATE_HPP_ 1
+#ifndef TCP_MESSAGE_HPP_
+#define TCP_MESSAGE_HPP_ 1
 
 //======================================================================================================================
 // Inclusions
 //======================================================================================================================
-#include <stdio.h>
+#include <pthread.h> //for threading , link with lpthread
+#include <queue>
 #include <string.h> //strlen
-#include <stdlib.h> //strlen
-#include <sys/socket.h>
-#include <arpa/inet.h> //inet_addr
-#include <unistd.h>    //write
-#include <pthread.h>   //for threading , link with lpthread
+#include <string>   //string typr
+#include <vector>
 
 #include "conf.hpp"
 
 //======================================================================================================================
 // Type Definitions / Enums / Defines / Macros / Consts
 //======================================================================================================================
-
+// Class forward declaration
+class TcpMessage;
 
 //======================================================================================================================
 // Extern Variables
 //======================================================================================================================
-extern bool shutdownOccured;
+// Shared queue
+extern std::queue<TcpMessage> tcpRxMsgs;
 
+// Getting the mutex
+extern pthread_mutex_t mutex;
+extern pthread_cond_t dataNotProduced;
+extern pthread_cond_t dataNotConsumed;
 
 //======================================================================================================================
 // External Constants
 //======================================================================================================================
 
-
 //======================================================================================================================
 // Prototypes
 //======================================================================================================================
-/// ----------------------------------------------------------------------------------------------------------------
-/// <summary>
-/// One line description.
-/// <para><b>Description</b></para>
-///     Multiple line description.
-///     Return: U8 status, 0=OK (no error)
-///     </summary>
-/// <param name='param1'>
-///     Description of the first paramter.
-///     </param>
-/// <param name='param2'>
-///     Description of the second paramter.
-///     </param>
-/// ----------------------------------------------------------------------------------------------------------------
-void *startTcpServer(void *arg);
+class TcpMessage
+{
+private:
+    std::string m_payload;
+
+public:
+    TcpMessage(const std::string &payload)
+    {
+        m_payload = payload;
+    }
+
+    void setPayload(const std::string &payload);
+
+    std::string getPayload();
+
+    static std::vector<std::string> splitMsg(const std::string &fullMsg);
+    
 
 
-void *connectionHandler(void *socket_desc);
+};
 
-
-#endif // TEMPLATE_HPP_
+#endif // TCP_MESSAGE_HPP_

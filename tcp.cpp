@@ -19,18 +19,18 @@
 // Inclusions
 //======================================================================================================================
 #include <stdio.h>
-#include <string.h> 		//strlen
-#include <string>			//string typr
-#include <stdlib.h> 		//strlen
+#include <string.h> //strlen
+#include <string> //string typr
+#include <stdlib.h> //strlen
 #include <sys/socket.h>
-#include <arpa/inet.h> 		//inet_addr
-#include <unistd.h>	   		//write
-#include <pthread.h>   		//for threading , link with lpthread
+#include <arpa/inet.h> //inet_addr
+#include <unistd.h> //write
+#include <pthread.h> //for threading , link with lpthread
 #include <vector>
-#include <iostream> 		//Needed for cout
+#include <iostream> //Needed for cout
 
 #include "tcp.hpp"
-
+#include "tcp_message.hpp"
 
 //======================================================================================================================
 // Type Definitions / Enums / Defines / Macros / Consts
@@ -46,7 +46,7 @@
 // Variables, Objects
 //======================================================================================================================
 bool shutdownOccured = false;
-std::string message;
+
 int socket_desc;
 int new_socket;
 int c;
@@ -86,6 +86,7 @@ struct sockaddr_in server, client;
 /// ------------------------------------------------------------------------------------------------------------
 void *startTcpServer(void *arg)
 {
+	std::string txMessage;
 	// Create socket
 	//----------------------------------------------
 	// Address Family - AF_INET (this is IP version 4) (AF_INET6 for IPV6)
@@ -136,8 +137,8 @@ void *startTcpServer(void *arg)
 			printf("Client Port:\t%d\n", client_port);
 
 			// Reply to the client
-			message = "Hello Client , I have received your connection. But I have to go now, bye\n";
-			write(new_socket, message.data(), strlen(message.data()));
+			txMessage = "Hello Client , I have received your connection. But I have to go now, bye\n";
+			write(new_socket, txMessage.data(), strlen(txMessage.data()));
 
 			pthread_t sniffer_thread;
 			new_sock = (int *)malloc(1);
@@ -196,24 +197,37 @@ void *connectionHandler(void *socket_desc)
 	// Get the socket descriptor
 	int sock = *(int *)socket_desc;
 	int read_size;
-	char client_message[2000];
-	std::string message;
+	std::string rxMessage;
+	std::string txMessage;
 
-	// Send some messages to the client
-	message = "Greetings! I am your connection handler\n";
-	write(sock, message.data(), strlen(message.data()));
-	message = "Now type something and i shall repeat what you type \n";
-	write(sock, message.data(), strlen(message.data()));
+	// Send some messages to the client.
+	txMessage = "Greetings! I am your connection handler\n";
+	write(sock, txMessage.data(), strlen(txMessage.data()));
+	txMessage = "Now type something and i shall repeat what you type \n";
+	write(sock, txMessage.data(), strlen(txMessage.data()));
 
 	// Receive a message from client
 	while (shutdownOccured == false)
 	{
-		read_size = recv(sock, client_message, 2000, 0);
+		char tempRxMsg[tcpMsgMaxSize];
+
+		read_size = recv(sock, tempRxMsg, tcpMsgMaxSize, 0);
 
 		if (read_size > 0)
 		{
+			// Terminate the char array as a string would.
+			tempRxMsg[read_size] = '\0';
+
+			// Convert receiveed char array into a string.
+			rxMessage = tempRxMsg;
+
 			// Send the message back to client
-			write(sock, client_message, strlen(client_message));
+			write(sock, rxMessage.data(), strlen(rxMessage.data()));
+
+			// Getting the lock on queue using mutex.
+			pthread_mutex_lock(&mutex);
+			tcpRxMsgs.push(TcpMessage(rxMessage));
+			pthread_mutex_unlock(&mutex);
 		}
 		// Either there was a connection problem or simply no client sent a msg.
 		else if (read_size == 0)
@@ -226,7 +240,6 @@ void *connectionHandler(void *socket_desc)
 			// No client has sent a message.
 			if (errno == EWOULDBLOCK)
 			{
-				
 			}
 			// Connection error.
 			else

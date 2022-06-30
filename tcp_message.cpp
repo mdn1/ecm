@@ -1,21 +1,9 @@
 //======================================================================================================================
 // C O P Y R I G H T
 //======================================================================================================================
-/// \file       tcp.hpp
+/// \file       tcp_message.cpp
 /// \brief      TODO
-/// \details
-
-///             Server side:
-///             	1. Create a socket (socket())
-///             	2. Bind it to a port (bind())
-///             	3. Set it to listen state. (listen())
-///             	4. Accept a connection (accept())
-///             	5. Send and receive data with accepted socket (send() & recv())
-///
-///             Client side
-///             	1. Create a socket (socket())
-///             	2. Establish a connection (connect())
-///             	3. Send and recive data (send() & recv())
+/// \details    TODO
 /// \author     maintained by: Mario D. Nevola
 ///
 /// \copyright  Copyright (c) 2022 by Universität Stuttgart. All rights reserved. \n
@@ -28,61 +16,77 @@
 //======================================================================================================================
 
 //======================================================================================================================
-// Header Protection
-//======================================================================================================================
-#ifndef TEMPLATE_HPP_
-#define TEMPLATE_HPP_ 1
-
-//======================================================================================================================
 // Inclusions
 //======================================================================================================================
-#include <stdio.h>
-#include <string.h> //strlen
-#include <stdlib.h> //strlen
-#include <sys/socket.h>
-#include <arpa/inet.h> //inet_addr
-#include <unistd.h>    //write
-#include <pthread.h>   //for threading , link with lpthread
+#include <string>
 
-#include "conf.hpp"
+#include "tcp_message.hpp"
 
 //======================================================================================================================
 // Type Definitions / Enums / Defines / Macros / Consts
 //======================================================================================================================
 
-
 //======================================================================================================================
-// Extern Variables
-//======================================================================================================================
-extern bool shutdownOccured;
-
-
-//======================================================================================================================
-// External Constants
+// Local Method Prototypes
 //======================================================================================================================
 
+//======================================================================================================================
+// Variables, Objects
+//======================================================================================================================
+std::queue<TcpMessage> tcpRxMsgs;
+
+// Getting the mutex
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t dataNotProduced = PTHREAD_COND_INITIALIZER;
+pthread_cond_t dataNotConsumed = PTHREAD_COND_INITIALIZER;
 
 //======================================================================================================================
-// Prototypes
+// Local Implementation
 //======================================================================================================================
-/// ----------------------------------------------------------------------------------------------------------------
-/// <summary>
-/// One line description.
-/// <para><b>Description</b></para>
-///     Multiple line description.
-///     Return: U8 status, 0=OK (no error)
-///     </summary>
-/// <param name='param1'>
-///     Description of the first paramter.
-///     </param>
-/// <param name='param2'>
-///     Description of the second paramter.
-///     </param>
-/// ----------------------------------------------------------------------------------------------------------------
-void *startTcpServer(void *arg);
 
+//======================================================================================================================
+// API Implementation
+//======================================================================================================================
 
-void *connectionHandler(void *socket_desc);
+/// ------------------------------------------------------------------------------------------------------------
+/// See description in Header file.
+/// ------------------------------------------------------------------------------------------------------------
+void TcpMessage::setPayload(const std::string &payload)
+{
+    m_payload = payload;
+}
 
+/// ------------------------------------------------------------------------------------------------------------
+/// See description in Header file.
+/// ------------------------------------------------------------------------------------------------------------
+std::string TcpMessage::getPayload()
+{
+    return m_payload;
+}
 
-#endif // TEMPLATE_HPP_
+/// ------------------------------------------------------------------------------------------------------------
+/// See description in Header file.
+/// ------------------------------------------------------------------------------------------------------------
+std::vector<std::string> TcpMessage::splitMsg(const std::string &fullMsg)
+{
+    std::string msg = fullMsg;
+    std::vector<std::string> splittedMsg{};
+    size_t pos = 0;
+    
+    // Iterate as many times as there are delimiter symbols in the string.
+    while ((pos = msg.find(tcpMsgDelimiter)) != std::string::npos) 
+    {
+        // Extract the sub-string starting at position and ending where the delimiter was found.
+        splittedMsg.push_back(msg.substr(0, pos));
+
+        // Remove substring from main string.
+        msg.erase(0, pos + tcpMsgDelimiter.length());
+    }
+
+    if (pos == std::string::npos)
+    {
+        splittedMsg.push_back(msg);
+    }
+
+    return splittedMsg;
+}
