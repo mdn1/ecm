@@ -76,16 +76,29 @@ std::vector<std::string> TcpMessage::splitMsg(const std::string &fullMsg)
     // Iterate as many times as there are delimiter symbols in the string.
     while ((pos = msg.find(tcpMsgDelimiter)) != std::string::npos) 
     {
-        // Extract the sub-string starting at position and ending where the delimiter was found.
+        // Extract the first sub-string starting at 0 and ending where the delimiter was found.
         splittedMsg.push_back(msg.substr(0, pos));
+
+        // Remove any '\n' at the end of the string if present.
+        if (!splittedMsg.back().empty() &&
+            splittedMsg.back()[splittedMsg.back().length() - 1] == '\n')
+        {
+            splittedMsg.back().erase(splittedMsg.back().length() - 1);
+        }
 
         // Remove substring from main string.
         msg.erase(0, pos + tcpMsgDelimiter.length());
     }
 
+    // Add the last string segment to the queue.
     if (pos == std::string::npos)
     {
         splittedMsg.push_back(msg);
+
+        // Remove any '\n' at the end of the string if present.
+        if (!splittedMsg.back().empty() && splittedMsg.back()[splittedMsg.back().length()-1] == '\n') {
+            splittedMsg.back().erase(splittedMsg.back().length()-1);
+        }
     }
 
     return splittedMsg;

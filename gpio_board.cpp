@@ -56,13 +56,6 @@ namespace gpio_boards
 
         switch (this->board_number)
         {
-        case gpio_boards_enum::GPIO_BOARD_0:
-        {
-            gpio_board_0 board;
-            write_handle = new pcf8574(i2cBusPort, board.write_adress, gpioType_t::Output);
-            read_handle = new pcf8574(i2cBusPort, board.read_adress, gpioType_t::Input);
-            break;
-        }
         case gpio_boards_enum::GPIO_BOARD_1:
         {
             gpio_board_1 board;
@@ -108,6 +101,13 @@ namespace gpio_boards
         case gpio_boards_enum::GPIO_BOARD_7:
         {
             gpio_board_7 board;
+            write_handle = new pcf8574(i2cBusPort, board.write_adress, gpioType_t::Output);
+            read_handle = new pcf8574(i2cBusPort, board.read_adress, gpioType_t::Input);
+            break;
+        }
+        case gpio_boards_enum::GPIO_BOARD_8:
+        {
+            gpio_board_8 board;
             write_handle = new pcf8574(i2cBusPort, board.write_adress, gpioType_t::Output);
             read_handle = new pcf8574(i2cBusPort, board.read_adress, gpioType_t::Input);
             break;

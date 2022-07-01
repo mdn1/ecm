@@ -35,6 +35,7 @@
 //======================================================================================================================
 const std::string i2cBusPort = "/dev/i2c-1";
 const std::string tcpMsgDelimiter = " "; // Symbol used as delimiter in the tcpMsgs.
+const std::string tcpMsgParameterDelimiter = "="; // Symbol used as delimiter in the tcpMsgs parameter.
 const int tcpMsgMaxSize = 2000; // Max size of bytes for a tcp message.
 constexpr uint8_t maxi2cBusPortLength = 17;
 constexpr int tcpSocketPort = 8881;
@@ -42,5 +43,35 @@ constexpr int tcpSocketPort = 8881;
 //constexpr uint8_t i2cAdapterNr = 1; 
 // uint16_t slave_adress = 0x08;
 
+/* In total there are 8 LED Panels with 6 LEDs each.
+ * 
+ * To control the outputs send this string using the TCP protocol:
+ * [COMMAND] [ARGUMENT1] [PARAMETER1] [PARAMETER2] [...] ...
+ * SojuzControl --led --panel1=00XXXXXX --panel2=00XXXXXX ...
+ */
+
+const std::string commandControl = "SojuzControl";
+
+const std::string argumentLed = "--led";
+
+const std::string parameterPanel = "--panel";
+const std::string parameterPanel1 = "--panel1";
+const std::string parameterPanel2 = "--panel2";
+const std::string parameterPanel3 = "--panel3";
+const std::string parameterPanel4 = "--panel4";
+const std::string parameterPanel5 = "--panel5";
+const std::string parameterPanel6 = "--panel6";
+const std::string parameterPanel7 = "--panel7";
+const std::string parameterPanel8 = "--panel8";
+
+enum class commandType
+{
+    commandControl = 0,
+};
+
+enum class argumentType
+{
+    argumentLed = 0,
+};
 
 #endif // CONF_HPP

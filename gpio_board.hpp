@@ -44,21 +44,21 @@ namespace gpio_boards
      */
     enum class gpio_boards_enum
     {
-        GPIO_BOARD_0,
         GPIO_BOARD_1,
         GPIO_BOARD_2,
         GPIO_BOARD_3,
         GPIO_BOARD_4,
         GPIO_BOARD_5,
         GPIO_BOARD_6,
-        GPIO_BOARD_7
+        GPIO_BOARD_7,
+        GPIO_BOARD_8
     };
 
     /*
      * On the pcf8574 the adress is coded as follow:
      * A2:L, A1:L, A0:L
      */
-    struct gpio_board_0
+    struct gpio_board_1
     {
         uint16_t write_adress = 0x40 >> 1; //20
         uint16_t read_adress = 0x41 >> 1;
@@ -68,7 +68,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:L, A1:L, A0:H
      */
-    struct gpio_board_1
+    struct gpio_board_2
     {
         uint16_t write_adress = 0x42 >> 1; //21
         uint16_t read_adress = 0x43 >> 1;
@@ -78,7 +78,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:L, A1:H, A0:L
      */
-    struct gpio_board_2
+    struct gpio_board_3
     {
         uint16_t write_adress = 0x44 >> 1;
         uint16_t read_adress = 0x45 >> 1;
@@ -88,7 +88,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:L, A1:H, A0:H
      */
-    struct gpio_board_3
+    struct gpio_board_4
     {
         uint16_t write_adress = 0x46 >> 1;
         uint16_t read_adress = 0x47 >> 1;
@@ -98,7 +98,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:H, A1:L, A0:L
      */
-    struct gpio_board_4
+    struct gpio_board_5
     {
         uint16_t write_adress = 0x48 >> 1;
         uint16_t read_adress = 0x49 >> 1;
@@ -108,7 +108,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:H, A1:L, A0:H
      */
-    struct gpio_board_5
+    struct gpio_board_6
     {
         uint16_t write_adress = 0x4A >> 1;
         uint16_t read_adress = 0x4B >> 1;
@@ -118,7 +118,7 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:H, A1:H, A0:L
      */
-    struct gpio_board_6
+    struct gpio_board_7
     {
         uint16_t write_adress = 0x4C >> 1;
         uint16_t read_adress = 0x4D >> 1;
@@ -128,11 +128,12 @@ namespace gpio_boards
      * On the pcf8574 the adress is coded as follow:
      * A2:H, A1:H, A0:H
      */
-    struct gpio_board_7
+    struct gpio_board_8
     {
         uint16_t write_adress = 0x4E >> 1;
         uint16_t read_adress = 0x4F >> 1;
     };
+    
 } // namespace gpio_boards
 
 //======================================================================================================================
