@@ -35,7 +35,10 @@
 //======================================================================================================================
 // Variables, Objects
 //======================================================================================================================
-
+namespace gpio_boards
+{
+    std::vector<gpio_board *> allLedPanels;
+}
 
 //======================================================================================================================
 // Local Implementation
@@ -113,6 +116,8 @@ namespace gpio_boards
             break;
         }
         }
+
+        allLedPanels.push_back(this);
     }
 
 
@@ -123,6 +128,9 @@ namespace gpio_boards
     {
         delete write_handle;
         delete read_handle;
+
+        // Remove the deleted panel from the list of all panels.
+        allLedPanels.erase(std::remove(allLedPanels.begin(), allLedPanels.end(), this), allLedPanels.end());
     }
 
     void gpio_board::write(uint8_t output_pin, uint8_t value)
@@ -130,9 +138,13 @@ namespace gpio_boards
         write_handle->setBit(output_pin, value);
     }
 
-    void gpio_board::write_all(unsigned char value)
+    void gpio_board::write_all(std::bitset<8> value)
     {
-        write_handle->setByte(value);
+        // Flip bits because the the outputs need to be pulled down to be activated
+        std::bitset<8> inversedValue = ~value;
+        unsigned char valueAsChar = static_cast<unsigned char>(inversedValue.to_ulong());
+        
+        write_handle->setByte(valueAsChar);
     }
 
     uint8_t gpio_board::read(uint8_t input_pin)

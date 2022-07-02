@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jul  1 08:37:45 2022
+# Make data base, printed on Sat Jul  2 09:39:08 2022
 
 # Variables
 
@@ -99,7 +99,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-SSH_CLIENT = 192.168.111.31 56348 22
+SSH_CLIENT = 192.168.111.31 53869 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -129,7 +129,7 @@ _ = /home/sojuz/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-a5fbcc09-dff6-4c62-9cf3-3fe443dfd32f.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-ae09cc46-d894-4f89-89a9-460d7264f6e4.sock
 # environment
 XDG_SESSION_CLASS = user
 # environment
@@ -137,7 +137,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/sojuz
 # environment
-XDG_SESSION_ID = 4
+XDG_SESSION_ID = 40
 # default
 .RECIPEPREFIX := 
 # automatic
@@ -147,7 +147,7 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = 192.168.111.31 56348 192.168.111.50 22
+SSH_CONNECTION = 192.168.111.31 53869 192.168.111.50 22
 # variable set hash-table stats:
 # Load=68/1024=7%, Rehash=0, Collisions=2/95=2%
 
@@ -215,6 +215,6 @@ GNUmakefile:
 # strcache performance: lookups = 30 / hit rate = 10%
 # hash-table stats:
 # Load=27/8192=0%, Rehash=0, Collisions=0/30=0%
-# Finished Make data base on Fri Jul  1 08:37:45 2022
+# Finished Make data base on Sat Jul  2 09:39:08 2022
 
  

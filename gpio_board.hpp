@@ -28,6 +28,9 @@
 //======================================================================================================================
 #include <cstdint>
 #include <string.h>
+#include <bitset>
+#include <vector>
+#include <algorithm> // For erase() to remove elements from vector.
 
 #include "pcf8574_io.hpp"
 
@@ -136,9 +139,26 @@ namespace gpio_boards
     
 } // namespace gpio_boards
 
+// Forward declarations.
+namespace gpio_boards
+{
+    class gpio_board;
+}
+
+namespace gpio_boards
+{
+    const std::bitset<8> allOn = 0b11111111;
+    const std::bitset<8> allOff = 0b00000000;
+}
+
+
 //======================================================================================================================
 // Extern Variables
 //======================================================================================================================
+namespace gpio_boards
+{
+    extern std::vector<gpio_board*> allLedPanels;
+}
 
 
 //======================================================================================================================
@@ -212,7 +232,7 @@ namespace gpio_boards
         ///     A byte containing the value of all outputs (e.g: 00010111).
         ///     </param>
         /// ----------------------------------------------------------------------------------------------------------------
-        void write_all(unsigned char value);
+        void write_all(std::bitset<8> value);
 
 
         /// ----------------------------------------------------------------------------------------------------------------

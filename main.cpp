@@ -6,39 +6,33 @@
 #include <signal.h>        //Needed for keyboard signal capturing.
 #include <unistd.h>        //Needed for sleep
 #include <iostream>        //Needed for cout
+#include <bitset>
 
 #include "conf.hpp"
 #include "gpio_board.hpp"
 #include "tcp.hpp"
 #include "tcp_message.hpp"
 
-
-
-gpio_boards::gpio_board *ledPanel1 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_1);
-gpio_boards::gpio_board *ledPanel2 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_2);
-gpio_boards::gpio_board *ledPanel3 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_3);
-gpio_boards::gpio_board *ledPanel4 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_4);
-gpio_boards::gpio_board *ledPanel5 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_5);
-gpio_boards::gpio_board *ledPanel6 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_6);
-gpio_boards::gpio_board *ledPanel7 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_7);
-gpio_boards::gpio_board *ledPanel8 = new gpio_boards::gpio_board(
-    i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_8);
+gpio_boards::gpio_board ledPanel1(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_1);
+gpio_boards::gpio_board ledPanel2(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_2);
+gpio_boards::gpio_board ledPanel3(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_3);
+gpio_boards::gpio_board ledPanel4(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_4);
+gpio_boards::gpio_board ledPanel5(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_5);
+gpio_boards::gpio_board ledPanel6(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_6);
+gpio_boards::gpio_board ledPanel7(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_7);
+gpio_boards::gpio_board ledPanel8(i2cBusPort, gpio_boards::gpio_boards_enum::GPIO_BOARD_8);
 
 pthread_t tcpThread;
 
-int updateOutputs(std::vector<std::string> newState);
+// Forward declarations.
+bool executeCommand(parsedMsgType msg);
+bool updateOutputs(std::map<parameterType, std::bitset<8>> outputStates);
+void runOutputTest();
+
 
 void init()
 {
-        // set the location of the used i2c port of the Raspi
-        // snprintf(i2cBusPort, 19, i2cPort, i2cAdapterNr); //   "/dev/i2c-%d"
+        runOutputTest();
 }
 
 // Define the function to be called when ctrl-c (SIGINT) is sent to process
@@ -90,7 +84,10 @@ int main(int argc, char **argv)
                                 std::vector<std::string> splittedMsg = TcpMessage::splitMsg(lastMsg);
 
                                 // Parse the strting content.
-                                int ret = updateOutputs(splittedMsg);
+                                parsedMsgType newState = TcpMessage::parseMsg(splittedMsg);
+
+                                // Update the outputs.
+                                executeCommand(newState);
                         }
                         else
                         {
@@ -99,162 +96,134 @@ int main(int argc, char **argv)
                 }
         }
 
-        delete ledPanel1;
-        delete ledPanel2;
-        delete ledPanel3;
-        delete ledPanel4;
-        delete ledPanel5;
-        delete ledPanel6;
-        delete ledPanel7;
-        delete ledPanel8;
-
         pthread_join(tcpThread, NULL);
         printf("Application terminated.\n");
 }
 
-int updateOutputs(std::vector<std::string> newState)
+bool executeCommand(parsedMsgType msg)
 {
-        commandType command;
-        argumentType argument;
-
-        //******************************************
-        //              Parse command
-        //******************************************
-        // At least 1 word for the command.
-        if (newState.size() < 1)
+        if (msg.parsingError != 0)
         {
-                // No message sent.
-                return 1;
+                return false;
         }
 
-        // Parse first word.
-        if (newState[0] == commandControl)
+        switch (msg.command)
         {
-                command = commandType::commandControl;
-        }
-        else if (0)
-        {
-                // currently not in use
-                // command = commandType::XYZ;
-        }
-        else
-        {
-                // No recognized command found.
-                return 2;
-        }
-
-        //******************************************
-        //              Parse argument
-        //******************************************
-        // At least 1 word for the argument.
-        if (newState.size() < 2)
-        {
-                // No argument found.
-                return 3;
-        }
-
-        // Parse the argument
-        if (newState[1] == argumentLed)
-        {
-                argument = argumentType::argumentLed;
-        }
-        else if (0)
-        {
-                // currently not in use
-                // argument = argumentType::XYZ;
-        }
-        else
-        {
-                // No recognized argument found.
-                return 4;
-        }
-
-        //******************************************
-        //              Parse parameters
-        //******************************************
-        // At least 1 word for the parameters.
-        if (newState.size() < 3)
-        {
-                // No parameter sent.
-                return 5;
-        }
-
-        // Control Led selected.
-        if (command == commandType::commandControl && argument == argumentType::argumentLed)
-        {
-                int positionInMsg = 2; // Posistion 0 is the command. Position 1 is the argument.
-                size_t pos = 0;
-                
-
-                while (positionInMsg <= newState.size() - 1 )
+        case commandType::commandTest:
+                runOutputTest();
+                break;
+        case commandType::commandControl:
+                if (msg.argument == argumentType::argumentLed)
                 {
-                        if ((pos = newState[positionInMsg].find(tcpMsgParameterDelimiter)) == std::string::npos)
+                        if (msg.parameters.size() > 0)
                         {
-                                // Error with parameter format.
-                                return 6;
+                                updateOutputs(msg.parameters);
                         }
+                }
+                else
+                {
+                        return false;
+                }
+                break;
+        }
 
-                        // Parameter parameterPanel= "--panel" found.
-                        if(newState[positionInMsg].find(parameterPanel) != std::string::npos)
+        // Ok.
+        return true;
+}
+
+bool updateOutputs(std::map<parameterType, std::bitset<8>> outputStates)
+{
+        // Search if any command to ALL the panels have been given.
+        auto search = outputStates.find(parameterType::parameterPanelAll);
+        if (search != outputStates.end())
+        {
+                std::cout <<"smth asked" <<std::endl;
+                if(search->second == gpio_boards::allOn)
+                {
+                        // All On
+                        for (gpio_boards::gpio_board *ledPanelX : gpio_boards::allLedPanels)
                         {
-                                char newPanelValue = 0b00000000;
-                                std::string binString = "";
-
-                                // Extract binary value from string.
-                                binString = newState[positionInMsg].substr(pos+ tcpMsgParameterDelimiter.size());
-
-                                // Convert string to binary number (char).
-                                newPanelValue = std::stoi(binString, nullptr, 2);
-
-                                // Delete binary value "=XXXXXXX".
-                                newState[positionInMsg].erase(pos);
-                                
-                                // Update the correct led panel.
-                                if (newState[positionInMsg] == parameterPanel1)
-                                {
-                                        std::cout << "Panel 1 activated." << std::endl;
-                                        ledPanel1->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel2)
-                                {
-                                        std::cout << "Panel 2 activated." << std::endl;
-                                        ledPanel2->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel3)
-                                {
-                                        std::cout << "Panel 3 activated." << std::endl;
-                                        ledPanel3->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel4)
-                                {
-                                        std::cout << "Panel 4 activated." << std::endl;
-                                        ledPanel4->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel5)
-                                {
-                                        std::cout << "Panel 5 activated." << std::endl;
-                                        ledPanel5->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel6)
-                                {
-                                        std::cout << "Panel 6 activated." << std::endl;
-                                        ledPanel6->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel7)
-                                {
-                                        std::cout << "Panel 7 activated." << std::endl;
-                                        ledPanel7->write_all(~newPanelValue);
-                                }
-                                else if (newState[positionInMsg] == parameterPanel8)
-                                {
-                                        std::cout << "Panel 8 activated." << std::endl;
-                                        ledPanel8->write_all(~newPanelValue);
-                                }
+                                ledPanelX->write_all(gpio_boards::allOn);
+                                return true;
                         }
-                        positionInMsg ++;
+                }
+                else if (search->second == gpio_boards::allOff)
+                {
+                        // All Off
+                        for (gpio_boards::gpio_board *ledPanelX : gpio_boards::allLedPanels)
+                        {
+                                ledPanelX->write_all(gpio_boards::allOff);
+                                return true;
+                        }
+                }
+        }
+
+        for (auto itr = outputStates.begin(); itr != outputStates.end(); ++itr)
+        {
+                switch (itr->first)
+                {
+                case parameterType::parameterPanel1:
+                        ledPanel1.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel2:
+                        ledPanel2.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel3:
+                        ledPanel3.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel4:
+                        ledPanel4.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel5:
+                        ledPanel5.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel6:
+                        ledPanel6.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel7:
+                        ledPanel7.write_all(itr->second);
+                        break;
+                case parameterType::parameterPanel8:
+                        ledPanel8.write_all(itr->second);
+                        break;
                 }
         }
 
         // Ok.
-        return 0;
+        return true;
+}
+
+
+void runOutputTest()
+{
+        std::bitset<8> startValue = 0b00000001;
+
+        // On-Off cycles.
+        for (int repetition = 0; repetition < repetitionsForOutputTest; repetition++)
+        {
+                // All On
+                for (gpio_boards::gpio_board *ledPanelX : gpio_boards::allLedPanels)
+                {
+                        ledPanelX->write_all(gpio_boards::allOn);
+                }
+                usleep(500000);
+
+                // All Off
+                for (gpio_boards::gpio_board *ledPanelX : gpio_boards::allLedPanels)
+                {
+                        ledPanelX->write_all(gpio_boards::allOff);
+                }
+                usleep(100000);
+        }
+
+        // Iterate every LED panel.
+        for (gpio_boards::gpio_board *ledPanelX : gpio_boards::allLedPanels)
+        {
+                // Iterate every LED of the panel.
+                for (int i = 0; i <= 6; i++) // = 6 so it turns off.
+                {
+                        ledPanelX->write_all(startValue << i);
+                        usleep(delayLedJumpForOutputTestMs *1000); //ms -> µs
+                }
+        }
 }

@@ -2,8 +2,19 @@
 // C O P Y R I G H T
 //======================================================================================================================
 /// \file       tcp_message.cpp
-/// \brief      TODO
-/// \details    TODO
+/// \brief      Implementation of the tcp message class.
+/// \details    In total there are 8 LED Panels with 6 LEDs each.
+///             To control the outputs send a string using the TCP protocol according to:
+///                     [COMMAND] [ARGUMENT1] [PARAMETER1] [PARAMETER2] [...] ...
+///             Example:
+///             For controlling as many panels as desired. Only add the panels you wish to update.
+///                      sojuzControl --led --panel1=00XXXXXX --panel2=00XXXXXX ...
+///               For testing all the LEDs:
+///                      sojuzTest
+///               For turning on/off all LEDs  at one:
+///                      sojuzControl --led --all=on
+///                      sojuzControl --led --all=off
+///
 /// \author     maintained by: Mario D. Nevola
 ///
 /// \copyright  Copyright (c) 2022 by Universität Stuttgart. All rights reserved. \n
@@ -20,6 +31,7 @@
 //======================================================================================================================
 #include <string>
 
+#include "gpio_board.hpp"
 #include "tcp_message.hpp"
 
 //======================================================================================================================
@@ -102,4 +114,180 @@ std::vector<std::string> TcpMessage::splitMsg(const std::string &fullMsg)
     }
 
     return splittedMsg;
+}
+
+
+/// ------------------------------------------------------------------------------------------------------------
+/// See description in Header file.
+/// ------------------------------------------------------------------------------------------------------------
+parsedMsgType TcpMessage::parseMsg(std::vector<std::string> &msg)
+{
+    commandType command;
+    argumentType argument;
+    std::map<parameterType, std::bitset<8>> parameters;
+
+        //******************************************
+        //              Parse command
+        //******************************************
+        // At least 1 word for the command.
+        if (msg.size() < 1)
+        {
+                // No message sent.
+                return parsedMsgType(1);
+        }
+
+        // Parse first word.
+        if (msg[0] == commandControl)
+        {
+                command = commandType::commandControl;
+        }
+        else if (msg[0] == commandTest)
+        {
+                return parsedMsgType(0, commandType::commandTest);
+        }
+        else if (0)
+        {
+                // currently not in use
+                // command = commandType::XYZ;
+        }
+        else
+        {
+                // No recognized command found.
+                return parsedMsgType(2);
+        }
+
+        //******************************************
+        //              Parse argument
+        //******************************************
+        // At least 1 word for the argument.
+        if (msg.size() < 2)
+        {
+                // No argument found.
+                return parsedMsgType(3);
+        }
+
+        // Parse the argument
+        if (msg[1] == argumentLed)
+        {
+                argument = argumentType::argumentLed;
+        }
+        else if (0)
+        {
+                // currently not in use
+                // argument = argumentType::XYZ;
+        }
+        else
+        {
+                // No recognized argument found.
+                return parsedMsgType(4);
+        }
+
+        //******************************************
+        //              Parse parameters
+        //******************************************
+        // At least 1 word for the parameters.
+        if (msg.size() < 3)
+        {
+                // No valid parameter sent.
+                return parsedMsgType(5);
+        }
+
+        int positionInMsg = 2; // Posistion 0 is the command. Position 1 is the argument.
+        size_t pos = 0;
+
+        // Extract all parameters
+        while (positionInMsg <= msg.size() - 1)
+        {
+            if ((pos = msg[positionInMsg].find(tcpMsgParameterDelimiter)) == std::string::npos)
+            {
+                // Error with parameter format.
+                return parsedMsgType(6);
+            }
+
+            // Parameter parameterPanel= "--panel" found.
+            if (msg[positionInMsg].find(parameterPanel) != std::string::npos)
+            {
+                std::bitset<8> newPanelValue = gpio_boards::allOff;
+                std::string binString = "";
+
+                // Extract binary value from string.
+                binString = msg[positionInMsg].substr(pos + tcpMsgParameterDelimiter.size());
+
+                // Convert string to binary number (char).
+                newPanelValue = std::stoi(binString, nullptr, 2);
+
+                // Delete binary value "=XXXXXXX".
+                msg[positionInMsg].erase(pos);
+
+                // Update the correct led panel.
+                if (msg[positionInMsg] == parameterPanel1)
+                {
+                    parameters.insert({parameterType::parameterPanel1, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel2)
+                {
+                    parameters.insert({parameterType::parameterPanel2, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel3)
+                {
+                    parameters.insert({parameterType::parameterPanel3, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel4)
+                {
+                    parameters.insert({parameterType::parameterPanel4, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel5)
+                {
+                    parameters.insert({parameterType::parameterPanel5, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel6)
+                {
+                    parameters.insert({parameterType::parameterPanel6, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel7)
+                {
+                    parameters.insert({parameterType::parameterPanel7, newPanelValue});
+                }
+                else if (msg[positionInMsg] == parameterPanel8)
+                {
+                    parameters.insert({parameterType::parameterPanel8, newPanelValue});
+                }
+                else
+                {
+                    return parsedMsgType(6);
+                }
+            }
+            else if (msg[positionInMsg].find(parameterPanelAll) != std::string::npos)
+            {
+                std::string stateString = "";
+
+                // Extract state value from string.
+                stateString = msg[positionInMsg].substr(pos + tcpMsgParameterDelimiter.size());
+
+                // Convert string to binary number (char).
+                if (stateString == parameterPanelOn)
+                {
+                    parameters.insert({parameterType::parameterPanelAll, std::bitset<8>(gpio_boards::allOn)}); 
+                }
+                else if(stateString == parameterPanelOff)
+                {
+                    parameters.insert({parameterType::parameterPanelAll, std::bitset<8>(gpio_boards::allOff)}); 
+                }
+                else
+                {
+                    // No valid parameter sent.
+                    return parsedMsgType(5);
+                }
+
+                // Delete binary value "=XXXXXXX".
+                msg[positionInMsg].erase(pos);
+            }
+            else
+            {
+                return parsedMsgType(5);
+            }
+            positionInMsg++;
+        }
+
+    return parsedMsgType(0, command, argument, parameters);
 }

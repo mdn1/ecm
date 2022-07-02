@@ -3,7 +3,7 @@
 //======================================================================================================================
 /// \file       conf.hpp
 /// \brief      File containing all configuration parameters for the entire application.
-/// \details    TODO
+/// \details    Refer to each section depending on the purpose of the config.
 /// \author     maintained by: Mario D. Nevola
 ///
 /// \copyright  Copyright (c) 2022 by Universität Stuttgart. All rights reserved. \n
@@ -33,27 +33,44 @@
 //======================================================================================================================
 // Type Definitions / Enums / Defines / Macros / Consts
 //======================================================================================================================
+
+//******************************************
+//                   I2C
+//******************************************
 const std::string i2cBusPort = "/dev/i2c-1";
-const std::string tcpMsgDelimiter = " "; // Symbol used as delimiter in the tcpMsgs.
-const std::string tcpMsgParameterDelimiter = "="; // Symbol used as delimiter in the tcpMsgs parameter.
-const int tcpMsgMaxSize = 2000; // Max size of bytes for a tcp message.
 constexpr uint8_t maxi2cBusPortLength = 17;
+
+
+//******************************************
+//                   TCP
+//******************************************
 constexpr int tcpSocketPort = 8881;
-//constexpr char i2cBusPort[maxi2cBusPortLength] = "/dev/i2c-1"; // get available adapters with the cmd: ->	ls /dev/*i2c*
-//constexpr uint8_t i2cAdapterNr = 1; 
-// uint16_t slave_adress = 0x08;
+const std::string tcpMsgDelimiter = " ";                // Symbol used as delimiter in the tcpMsgs.
+const std::string tcpMsgParameterDelimiter = "=";       // Symbol used as delimiter in the tcpMsgs parameter.
+const int tcpMsgMaxSize = 2000;                         // Max size of bytes for a tcp message.
+
 
 /* In total there are 8 LED Panels with 6 LEDs each.
  * 
- * To control the outputs send this string using the TCP protocol:
+ * To control the outputs send a string using the TCP protocol according to:
  * [COMMAND] [ARGUMENT1] [PARAMETER1] [PARAMETER2] [...] ...
- * SojuzControl --led --panel1=00XXXXXX --panel2=00XXXXXX ...
+ * 
+ * Example:
+ * For controlling as many panels as desired. Only add the panels you wish to update.
+ *          sojuzControl --led --panel1=00XXXXXX --panel2=00XXXXXX ...
+ * For testing all the LEDs:
+ *          sojuzTest
+ * For turning on/off all LEDs  at one:
+ *          sojuzControl --led --all=on
+ *          sojuzControl --led --all=off
  */
 
-const std::string commandControl = "SojuzControl";
-
+// TCP msg commands
+const std::string commandControl = "sojuzControl";
+const std::string commandTest = "sojuzTest";
+// TCP msg arguments
 const std::string argumentLed = "--led";
-
+// TCP msg parametes
 const std::string parameterPanel = "--panel";
 const std::string parameterPanel1 = "--panel1";
 const std::string parameterPanel2 = "--panel2";
@@ -63,15 +80,16 @@ const std::string parameterPanel5 = "--panel5";
 const std::string parameterPanel6 = "--panel6";
 const std::string parameterPanel7 = "--panel7";
 const std::string parameterPanel8 = "--panel8";
+const std::string parameterPanelAll = "--all";
+const std::string parameterPanelOn = "on";
+const std::string parameterPanelOff = "off";
 
-enum class commandType
-{
-    commandControl = 0,
-};
 
-enum class argumentType
-{
-    argumentLed = 0,
-};
+//******************************************
+//                   MISC
+//******************************************
+const int repetitionsForOutputTest = 3;                 // Ho many on-off repetitions should occur during output test routine.
+const int delayLedJumpForOutputTestMs = 100;
+
 
 #endif // CONF_HPP
